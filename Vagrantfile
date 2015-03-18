@@ -4,12 +4,27 @@
 require 'fileutils'
 require 'net/http'
 require 'open-uri'
+require 'json'
 
 class Module
   def redefine_const(name, value)
     __send__(:remove_const, name) if const_defined?(name)
     const_set(name, value)
   end
+end
+
+def getK8Sreleases()
+  url = "https://api.github.com/repos/GoogleCloudPlatform/kubernetes/releases"
+  json =  JSON.load(open(url))
+  return json.collect { |item|
+    if KUBERNETES_ALLOW_PRERELEASES
+      item['tag_name'].gsub('v', '')
+    else
+      if item['prerelease'] == false
+        item['tag_name'].gsub('v', '')
+      end
+    end
+  }.compact
 end
 
 required_plugins = %w(vagrant-triggers)
@@ -30,12 +45,10 @@ MASTER_YAML = File.join(File.dirname(__FILE__), "master.yaml")
 NODE_YAML = File.join(File.dirname(__FILE__), "node.yaml")
 
 DOCKERCFG = File.expand_path(ENV['DOCKERCFG'] || "~/.dockercfg")
-
+KUBERNETES_ALLOW_PRERELEASES = (ENV['KUBERNETES_ALLOW_PRERELEASES'] =~ (/(true|t|yes|y|1)$/i) && true) || false
 KUBERNETES_VERSION = ENV['KUBERNETES_VERSION'] || 'latest'
 if KUBERNETES_VERSION == "latest"
-  url = "https://get.k8s.io"
-  Object.redefine_const(:KUBERNETES_VERSION,
-    open(url).read().scan(/release=.*/)[0].gsub('release=v', ''))
+  Object.redefine_const(:KUBERNETES_VERSION, getK8Sreleases[0])
 end
 
 CHANNEL = ENV['CHANNEL'] || 'alpha'

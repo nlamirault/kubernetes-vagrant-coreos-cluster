@@ -160,10 +160,16 @@ Most aspects of your cluster setup can be customized with environment variables.
    cluster.
 
    Defaults to **3** (or the total number of nodes of the cluster if lower).
+ - **KUBERNETES_ALLOW_PRERELEASES** if *true* then the *latest*
+   **KUBERNETES_VERSION** is the *latest* available 'pre-release', otherwise is the
+   *latest* available 'release'.
 
+   Defaults to *false*. This is IMHO a bit saner than having to constantly
+   hard-code specific versions and in any case the *latest* formal kubernetes
+   release should be a good and reasonable, reference point.
  - **KUBERNETES_VERSION** defines the specific kubernetes version being used.
 
-   Defaults to latest released version.
+   Defaults to *latest* released version.
 
 
 So, in order to start, say, a Kubernetes cluster with 3 minion nodes, 2GB of RAM and 2 vCPUs per node one just would do...
