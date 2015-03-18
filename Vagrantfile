@@ -93,7 +93,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.ssh.forward_agent = true
 
   config.vm.box = "coreos-#{CHANNEL}"
-  config.vm.box_version = ">= #{COREOS_VERSION}"
+  config.vm.box_version = "= #{COREOS_VERSION}"
   config.vm.box_url = "#{upstream}/coreos_production_vagrant.json"
 
   config.trigger.after [:up, :resume] do
