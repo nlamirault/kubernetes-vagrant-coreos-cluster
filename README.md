@@ -133,13 +133,13 @@ Most aspects of your cluster setup can be customized with environment variables.
  - **MASTER_MEM** sets the master's VM memory.
 
    Defaults to **512** (in MB)
- - **MASTER_CPUS** sets the number os vCPUs to be used by the master's VM.
+ - **MASTER_CPUS** sets the number of vCPUs to be used by the master's VM.
 
    Defaults to **1**.
  - **NODE_MEM** sets the worker nodes' (aka minions in Kubernetes lingo) VM memory.
 
    Defaults to **1024** (in MB)
- - **NODE_CPUS** sets the number os vCPUs to be used by the minions's VMs.
+ - **NODE_CPUS** sets the number of vCPUs to be used by the minions's VMs.
 
    Defaults to **1**.
  - **BASE_IP_ADDR** sets the lower bound IP addressing block of the VMs to be
