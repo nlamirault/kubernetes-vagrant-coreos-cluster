@@ -71,6 +71,8 @@ ETCD_CLUSTER_SIZE = ENV['ETCD_CLUSTER_SIZE'] || 3
 SERIAL_LOGGING = (ENV['SERIAL_LOGGING'].to_s.downcase == 'true')
 GUI = (ENV['GUI'].to_s.downcase == 'true')
 
+BASE_IP_ADDR = ENV['BASE_IP_ADDR'] || "172.17.8"
+
 (1..(NUM_INSTANCES.to_i + 1)).each do |i|
   case i
   when 1
@@ -80,7 +82,7 @@ GUI = (ENV['GUI'].to_s.downcase == 'true')
     hostname = ",node-%02d" % (i - 1)
   end
   if i <= ETCD_CLUSTER_SIZE
-    ETCD_SEED_CLUSTER.concat("#{hostname}=http://172.17.8.#{i+100}:2380")
+    ETCD_SEED_CLUSTER.concat("#{hostname}=http://#{BASE_IP_ADDR}.#{i+100}:2380")
   end
 end
 
@@ -99,6 +101,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.trigger.after [:up, :resume] do
     info "making sure ssh agent has the default vagrant key..."
     system "ssh-add ~/.vagrant.d/insecure_private_key"
+    info "regenerating kubLocalSetup"
+    system <<-EOT.prepend("\n\n") + "\n"
+      cat kubLocalSetup.tmpl | \
+       sed -e "s|__KUBERNETES_VERSION__|#{KUBERNETES_VERSION}|g" \
+           -e "s|__MASTER_IP__|#{MASTER_IP}|g" > kubLocalSetup
+       chmod +x kubLocalSetup
+    EOT
   end
 
   ["vmware_fusion", "vmware_workstation"].each do |vmware|
@@ -134,6 +143,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       cfg = MASTER_YAML
       memory = MASTER_MEM
       cpus = MASTER_CPUS
+      MASTER_IP="#{BASE_IP_ADDR}.#{i+100}"
     else
       hostname = "node-%02d" % (i - 1)
       cfg = NODE_YAML
@@ -185,7 +195,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
       end
 
-      kHost.vm.network :private_network, ip: "172.17.8.#{i+100}"
+      kHost.vm.network :private_network, ip: "#{BASE_IP_ADDR}.#{i+100}"
       # you can override this in synced_folders.yaml
       kHost.vm.synced_folder ".", "/vagrant", disabled: true
 
@@ -234,6 +244,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           sed -i "s,__CHANNEL__,v#{CHANNEL},g" /tmp/vagrantfile-user-data
           sed -i "s,__NAME__,#{hostname},g" /tmp/vagrantfile-user-data
           sed -i "s|__ETCD_SEED_CLUSTER__|#{ETCD_SEED_CLUSTER}|g" /tmp/vagrantfile-user-data
+          sed -i "s|__MASTER_IP__|#{MASTER_IP}|g" /tmp/vagrantfile-user-data
           mv /tmp/vagrantfile-user-data /var/lib/coreos-vagrant/
         EOF
       end

@@ -142,6 +142,12 @@ Most aspects of your cluster setup can be customized with environment variables.
  - **NODE_CPUS** sets the number os vCPUs to be used by the minions's VMs.
 
    Defaults to **1**.
+ - **BASE_IP_ADDR** sets the lower bound IP addressing block of the VMs to be
+   created.
+
+   Default value is **172.17.8**. This turns very handy if for some reason
+   one wants to run test clusters in different hypervisors at same time.
+
  - **DOCKERCFG** sets the location of your private docker repositories (and keys) configuration.
 
    Defaults to "**~/.dockercfg**".

@@ -115,8 +115,8 @@ coreos:
             Requires=flanneld.service
             After=flanneld.service
             [Service]
-            ExecStartPre=/opt/bin/wupiao 172.17.8.101 5000
-            Environment=DOCKER_OPTS='--registry-mirror=http://172.17.8.101:5000'
+            ExecStartPre=/opt/bin/wupiao __MASTER_IP__ 5000
+            Environment=DOCKER_OPTS='--registry-mirror=http://__MASTER_IP__:5000'
     - name: rpc-statd.service
       command: start
       enable: true
@@ -148,9 +148,9 @@ coreos:
         ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/__RELEASE__/bin/linux/amd64/kube-proxy
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-proxy
         # wait for kubernetes master to be up and ready
-        ExecStartPre=/opt/bin/wupiao 172.17.8.101 8080
+        ExecStartPre=/opt/bin/wupiao __MASTER_IP__ 8080
         ExecStart=/opt/bin/kube-proxy \
-          --etcd_servers=http://172.17.8.101:2379 \
+          --etcd_servers=http://__MASTER_IP__:2379 \
           --logtostderr=true
         Restart=always
         RestartSec=10
@@ -168,12 +168,12 @@ coreos:
         ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/__RELEASE__/bin/linux/amd64/kubelet
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kubelet
         # wait for kubernetes master to be up and ready
-        ExecStartPre=/opt/bin/wupiao 172.17.8.101 8080
+        ExecStartPre=/opt/bin/wupiao __MASTER_IP__ 8080
         ExecStart=/opt/bin/kubelet \
           --address=0.0.0.0 \
           --port=10250 \
           --hostname_override=$public_ipv4 \
-          --api_servers=172.17.8.101:8080 \
+          --api_servers=__MASTER_IP__:8080 \
           --logtostderr=true
         Restart=always
         RestartSec=10
