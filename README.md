@@ -31,8 +31,10 @@ probably is) set in your shell's *$PATH*...
 
    `./kubLocalSetup install`
 
-   You may specify a different *kubectl* version via the `KUBERNETES_VERSION`
-   environment variable (see [here](#customization) for details).
+   Every time you manually set the `KUBERNETES_VERSION` environment variable
+   (see [here](#customization) for details), you need to rerun this command so
+   that kubernetes related (on host) *userland* matches what is inside the
+   cluster.
 
 - Set all needed environment variables in current shell...
 
