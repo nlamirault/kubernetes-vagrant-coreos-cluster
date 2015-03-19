@@ -7,11 +7,14 @@ cluster setup with **[Vagrant](https://www.vagrantup.com)** (1.7.2+) and
 
 ## Pre-requisites
 
+ * A **MacOS X** or **Linux host**
+  * **Microsoft Windows is not supported** at the moment.
+    Pull Requests to *fix* it are welcome :smile:
  * **[Vagrant](https://www.vagrantup.com)**
  * a supported Vagrant hypervisor
- 	* **[Virtualbox](https://www.virtualbox.org)** (the default)
- 	* **[Parallels Desktop](http://www.parallels.com/eu/products/desktop/)**
- 	* **[VMware Fusion](http://www.vmware.com/products/fusion)** or **[VMware Workstation](http://www.vmware.com/products/workstation)**
+	* **[Virtualbox](https://www.virtualbox.org)** (the default)
+	* **[Parallels Desktop](http://www.parallels.com/eu/products/desktop/)**
+	* **[VMware Fusion](http://www.vmware.com/products/fusion)** or **[VMware Workstation](http://www.vmware.com/products/workstation)**
  * some needed userland
  	* **kubectl** (required to manage your kubernetes cluster)
  	* **fleetctl** (optional for *debugging* **[fleet](http://github.com/coreos/fleet)**)
@@ -81,10 +84,10 @@ fleetctl list-machines
 
 You should see something like
 ```
-MACHINE		IP		METADATA
-dd0ee115...	172.17.8.101	role=master
-74a8dc8c...	172.17.8.102	role=minion
-c93da9ff...	172.17.8.103    role=minion
+MACHINE     IP            METADATA
+dd0ee115... 172.17.8.101  role=master
+74a8dc8c... 172.17.8.102  role=minion
+c93da9ff... 172.17.8.103  role=minion
 ```
 
 ## Notes about hypervisors

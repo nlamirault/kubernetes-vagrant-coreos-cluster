@@ -111,6 +111,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_version = "= #{COREOS_VERSION}"
   config.vm.box_url = "#{upstream}/coreos_production_vagrant.json"
 
+  config.trigger.before [:up, :provision] do
+    info "checking host platform..."
+    system <<-EOT.prepend("\n\n") + "\n"
+      which uname &>/dev/null || \
+        ( echo "'uname' not found.";
+          echo "looks like this host is not of unix type (linux or MacOS X)...";
+          echo "...some features may not fully work, or just not work at all." )
+    EOT
+  end
+
   config.trigger.after [:up, :resume] do
     info "making sure ssh agent has the default vagrant key..."
     system "ssh-add ~/.vagrant.d/insecure_private_key"
