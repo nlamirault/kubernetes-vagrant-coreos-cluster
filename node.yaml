@@ -156,7 +156,7 @@ coreos:
         # wait for kubernetes master to be up and ready
         ExecStartPre=/opt/bin/wupiao __MASTER_IP__ 8080
         ExecStart=/opt/bin/kube-proxy \
-          --etcd_servers=http://__MASTER_IP__:2379 \
+          --master=http://__MASTER_IP__:8080 \
           --logtostderr=true
         Restart=always
         RestartSec=10
