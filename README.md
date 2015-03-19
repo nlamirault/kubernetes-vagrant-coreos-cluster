@@ -50,46 +50,6 @@ some points to keep note too:
 
     `$(./kubLocalSetup shellinit) >> ~/.bashrc`
 
-## Master
-
-Current ```Vagrantfile``` will bootstrap one VM with everything it needs to become a Kubernetes _master_.
-```
-vagrant up master
-```
-
-Verify that ```fleet``` sees it
-```
-fleetctl list-machines
-```
-
-You should see something like
-```
-MACHINE		IP		METADATA
-dd0ee115...	172.17.8.101	role=master
-```
-
-## Minions
-
-Current ```Vagrantfile``` will bootstrap two VMs, by default, with everything needed to have two Kubernetes minions. You can
-change this by setting the **NUM_INSTANCES** environment variable (explained below).
-
-```
-vagrant up node-01 node-02
-```
-
-Verify ```fleet``` again, just for the sake of it
-```
-fleetctl list-machines
-```
-
-You should see something like
-```
-MACHINE     IP            METADATA
-dd0ee115... 172.17.8.101  role=master
-74a8dc8c... 172.17.8.102  role=minion
-c93da9ff... 172.17.8.103  role=minion
-```
-
 ## Notes about hypervisors
 
 ### Virtualbox
@@ -233,6 +193,15 @@ can take a little bit depending on your Internet connection speed.
 Please do note that, at any time, you can increase the number of running
 `minion` VMs by increasing the `NUM_INSTANCES` value in subsequent
 `vagrant up` invocations.
+
+You can use `fleet` at any time to check the status of your CoreOS cluster...  
+`fleetctl list-machines` should get something along
+```
+MACHINE     IP            METADATA
+dd0ee115... 172.17.8.101  role=master
+74a8dc8c... 172.17.8.102  role=minion
+c93da9ff... 172.17.8.103  role=minion
+```
 
 ### Usage
 
