@@ -3,12 +3,19 @@ Turnkey **[Kubernetes](https://github.com/GoogleCloudPlatform/kubernetes)**
 cluster setup with **[Vagrant](https://www.vagrantup.com)** (1.7.2+) and
 **[CoreOS](https://coreos.com)**.
 
+# Current status
+> **k8s version 0.13.2 was released early March/19 and doesn't *appear* to be
+> behaving here reliably yet**. We're working on it! Right now the highest
+> version supposed to run without issues is 0.12.1.
+> (see [here](#customization) for notes regarding how to run specific
+> k8s versions)
+
 ####If you're lazy, or in a hurry, jump to the [TL;DR](#tldr) section.
 
 ## Pre-requisites
 
  * A **MacOS X** or **Linux host**
-  * **Microsoft Windows is not supported** at the moment.
+  * **Microsoft Windows is *not* supported** at the moment.
     Pull Requests to *fix* it are welcome :smile:
  * **[Vagrant](https://www.vagrantup.com)**
  * a supported Vagrant hypervisor
