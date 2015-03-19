@@ -28,8 +28,8 @@ esac
 if [[ "$#" -eq 1 && "$1" == "install"  ]] ; then
   echo "Downloading and installing ${PLATFORM} version of kubectl (Kubernetes CLI) into ${targetDir}. This may take a couple minutes, depending on your internet speed.."
   [ -d ${targetDir} ] || sudo mkdir -p ${targetDir}
-  sudo rm -f ${targetDir}/kubectl &>/dev/null
-  sudo wget -q -L -O ${targetDir}/kubectl "${KUB_URL}"
+  [ -f ${targetDir}/kubectl ] && sudo rm -f ${targetDir}/kubectl
+  sudo wget -q --no-check-certificate -L -O ${targetDir}/kubectl "${KUB_URL}"
   [ -x ${targetDir}/kubectl ] || sudo chmod +x ${targetDir}/kubectl
 elif [[ "$#" -eq 1 && "$1" == "uninstall"  ]] ; then
   [ -f ${targetDir}/kubectl ] && sudo rm -f ${targetDir}/kubectl
