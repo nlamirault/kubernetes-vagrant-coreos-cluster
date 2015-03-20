@@ -4,9 +4,10 @@ cluster setup with **[Vagrant](https://www.vagrantup.com)** (1.7.2+) and
 **[CoreOS](https://coreos.com)**.
 
 # Current status
-> **k8s version 0.13.2 was released early March/19 and doesn't *appear* to be
-> behaving here reliably yet**. We're working on it! Right now the highest
-> version supposed to run without issues is 0.12.1.
+> due to some changes in kube-proxy invocation semantics current tip of this
+> repository works with kubernetes' versions 0.13.x or higher.
+> In order to test older versions (up to 0.12.1) use
+> [566441959c221](https://github.com/AntonioMeireles/kubernetes-vagrant-coreos-cluster/commit/566441959c221c13188152bd2fe708a240a3ce4c) checkout.
 > (see [here](#customization) for notes regarding how to run specific
 > k8s versions)
 
