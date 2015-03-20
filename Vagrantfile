@@ -111,28 +111,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_version = "= #{COREOS_VERSION}"
   config.vm.box_url = "#{upstream}/coreos_production_vagrant.json"
 
-  config.trigger.before [:up, :provision] do
-    info "checking host platform..."
-    system <<-EOT.prepend("\n\n") + "\n"
-      which uname &>/dev/null || \
-        ( echo "'uname' not found.";
-          echo "looks like this host is not of unix type (linux or MacOS X)...";
-          echo "...some features may not fully work, or just not work at all." )
-    EOT
-  end
-
-  config.trigger.after [:up, :resume] do
-    info "making sure ssh agent has the default vagrant key..."
-    system "ssh-add ~/.vagrant.d/insecure_private_key"
-    info "regenerating kubLocalSetup"
-    system <<-EOT.prepend("\n\n") + "\n"
-      cat kubLocalSetup.tmpl | \
-       sed -e "s|__KUBERNETES_VERSION__|#{KUBERNETES_VERSION}|g" \
-           -e "s|__MASTER_IP__|#{MASTER_IP}|g" > kubLocalSetup
-       chmod +x kubLocalSetup
-    EOT
-  end
-
   ["vmware_fusion", "vmware_workstation"].each do |vmware|
     config.vm.provider vmware do |v, override|
       override.vm.box_url = "#{upstream}/coreos_production_vagrant_vmware_fusion.json"
@@ -176,6 +154,33 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     config.vm.define vmName = hostname do |kHost|
       kHost.vm.hostname = vmName
+
+      # vagrant-triggers has no concept of global triggers so to avoid having
+      # then to run as many times as the total number of VMs we only call them
+      # in the master (re: emyl/vagrant-triggers#13)...
+      if vmName == "master"
+        kHost.trigger.before [:up, :provision] do
+          info "checking host platform..."
+          system <<-EOT.prepend("\n\n") + "\n"
+            which uname &>/dev/null || \
+              ( echo "'uname' not found.";
+              echo "looks like this host is not of unix type (linux or MacOS X)...";
+              echo "...some features may not fully work, or just not work at all." )
+          EOT
+        end
+
+        kHost.trigger.after [:up, :resume] do
+          info "making sure ssh agent has the default vagrant key..."
+          system "ssh-add ~/.vagrant.d/insecure_private_key"
+          info "regenerating kubLocalSetup"
+          system <<-EOT.prepend("\n\n") + "\n"
+            cat kubLocalSetup.tmpl | \
+             sed -e "s|__KUBERNETES_VERSION__|#{KUBERNETES_VERSION}|g" \
+                 -e "s|__MASTER_IP__|#{MASTER_IP}|g" > kubLocalSetup
+             chmod +x kubLocalSetup
+          EOT
+        end
+      end
 
       if SERIAL_LOGGING
         logdir = File.join(File.dirname(__FILE__), "log")
