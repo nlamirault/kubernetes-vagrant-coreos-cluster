@@ -172,6 +172,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         kHost.trigger.after [:up, :resume] do
           info "making sure ssh agent has the default vagrant key..."
           system "ssh-add ~/.vagrant.d/insecure_private_key"
+        end
+        kHost.trigger.after [:up] do
           info "regenerating kubLocalSetup"
           system <<-EOT.prepend("\n\n") + "\n"
             cat kubLocalSetup.tmpl | \
@@ -179,6 +181,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                  -e "s|__MASTER_IP__|#{MASTER_IP}|g" > kubLocalSetup
              chmod +x kubLocalSetup
           EOT
+          info "making sure localhosts' 'kubectl' matches what we just booted..."
+          system "./kubLocalSetup install"
         end
       end
 
