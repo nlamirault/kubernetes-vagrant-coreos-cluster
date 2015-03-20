@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-PLATFORM="$(uname -s)"
+PLATFORM="$(uname -s | tr '[:upper:]' '[:lower:]')"
 KUBERNETES_VERSION=__KUBERNETES_VERSION__
 
-KUB_URL="https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/$( \
-  echo ${PLATFORM} | tr '[:upper:]' '[:lower:]')/amd64/kubectl"
+KUB_URL="https://storage.googleapis.com/kubernetes-release/release/"
+KUB_URL+="v${KUBERNETES_VERSION}/bin/${PLATFORM}/amd64/kubectl"
 
 scream () {
     cat <<< "$@" 1>&2
@@ -13,10 +13,10 @@ scream () {
 }
 
 case "$PLATFORM" in
-  Darwin)
+  darwin)
     targetDir="/usr/local/bin"
     ;;
-  Linux)
+  linux)
     # targetDir="/opt/bin"
     targetDir="/usr/local/bin"
     ;;
@@ -26,7 +26,10 @@ case "$PLATFORM" in
 esac
 
 if [[ "$#" -eq 1 && "$1" == "install"  ]] ; then
-  echo "Downloading and installing ${PLATFORM} version of kubectl (Kubernetes CLI) into ${targetDir}. This may take a couple minutes, depending on your internet speed.."
+  echo -n "Downloading and installing ${PLATFORM}'s' version of kubectl "
+  echo "(Kubernetes CLI, v__KUBERNETES_VERSION__) into ${targetDir}. "
+  echo "This may take a bit, depending on your internet connection speed.."
+
   [ -d ${targetDir} ] || sudo mkdir -p ${targetDir}
   [ -f ${targetDir}/kubectl ] && sudo rm -f ${targetDir}/kubectl
   sudo wget -q --no-check-certificate -L -O ${targetDir}/kubectl "${KUB_URL}"
@@ -39,8 +42,8 @@ elif [[ "$#" -eq 1 && "$1" == "shellinit"  ]] ; then
     echo "Run './kubLocalSetup install' first."
     scream
   fi
-  echo "export ETCDCTL_PEERS=http://__MASTER_IP__:4001"
-  echo "export FLEETCTL_ENDPOINT=http://__MASTER_IP__:4001"
+  echo "export ETCDCTL_PEERS=http://__MASTER_IP__:2379"
+  echo "export FLEETCTL_ENDPOINT=http://__MASTER_IP__:2379"
   echo "export KUBERNETES_MASTER=http://__MASTER_IP__:8080"
 else
   echo "Usage: ./kubLocalSetup (install|shellinit|unistall)"
