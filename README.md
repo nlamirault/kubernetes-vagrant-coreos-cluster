@@ -32,7 +32,7 @@ cluster setup with **[Vagrant](https://www.vagrantup.com)** (1.7.2+) and
 
 - On **MacOS X** (and assuming you have [homebrew](http://brew.sh) already installed) run...
 
-   `brew install wget fleetctl etcdctl`
+   `brew install wget fleetctl etcd`
 
 - Download the *kubectl* binary into */usr/local/bin*, which should be (and most
 probably is) set in your shell's *$PATH*...
