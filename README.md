@@ -85,8 +85,16 @@ If you are using one of the **VMware** hypervisors you must **[buy](http://www.v
 See **DOCKERCFG** bellow.
 
 ## Customization
+> By design, **we expect that all aspects of your cluster setup should be
+> customizable either through *environment* variables or through plain
+> standalone configuration files** (and if they aren't that should be seen as a
+> plain *bug*, not a *feature* - [PRs]
+> (https://github.com/AntonioMeireles/kubernetes-vagrant-coreos-cluster/pulls)
+> welcome), so that no one should ever have to manually edit the
+> *Vagrantfile*, or having to know *anything* about the *Ruby* language.
+
 ### Environment variables
-Most aspects of your cluster setup can be customized with environment variables. Right now the available ones are:
+Right now, the available environment variables are:
 
  - **NUM_INSTANCES** sets the number of nodes (minions).
 
