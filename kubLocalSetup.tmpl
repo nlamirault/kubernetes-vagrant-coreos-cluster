@@ -13,11 +13,7 @@ scream () {
 }
 
 case "$PLATFORM" in
-  darwin)
-    targetDir="/usr/local/bin"
-    ;;
-  linux)
-    # targetDir="/opt/bin"
+  darwin|linux)
     targetDir="/usr/local/bin"
     ;;
   *)
@@ -26,9 +22,9 @@ case "$PLATFORM" in
 esac
 
 if [[ "$#" -eq 1 && "$1" == "install"  ]] ; then
-  echo -n "Downloading and installing ${PLATFORM}'s' version of kubectl "
+  echo -n "Downloading and installing ${PLATFORM}'s' version of 'kubectl' "
   echo "(Kubernetes CLI, v__KUBERNETES_VERSION__) into ${targetDir}. "
-  echo "This may take a bit, depending on your internet connection speed.."
+  echo "(This may take a bit, depending on your internet connection speed)"
 
   [ -d ${targetDir} ] || sudo mkdir -p ${targetDir}
   [ -f ${targetDir}/kubectl ] && sudo rm -f ${targetDir}/kubectl
