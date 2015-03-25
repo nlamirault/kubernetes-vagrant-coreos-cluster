@@ -182,6 +182,7 @@ coreos:
           --port=10250 \
           --hostname_override=$public_ipv4 \
           --api_servers=__MASTER_IP__:8080 \
+          --allow_privileged=true \
           --logtostderr=true
         Restart=always
         RestartSec=10
