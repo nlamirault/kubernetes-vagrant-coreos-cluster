@@ -56,13 +56,14 @@ coreos:
         RestartSec=5
         Environment="TMPDIR=/var/tmp/"
         Environment="DOCKER_HOST=unix:///var/run/early-docker.sock"
+        Environment="ETCD_VER=v2.0.7"
         EnvironmentFile=/etc/environment
         TimeoutStartSec=0
         SyslogIdentifier=writer_process
         LimitNOFILE=40000
         ExecStartPre=-/usr/bin/docker kill etcd
         ExecStartPre=-/usr/bin/docker rm etcd
-        ExecStartPre=/usr/bin/docker pull quay.io/coreos/etcd:v2.0.5
+        ExecStartPre=/usr/bin/docker pull quay.io/coreos/etcd:${ETCD_VER}
         ExecStart=/bin/bash -c "/usr/bin/docker run \
             --net=host \
             -p 2379:2379 \
@@ -72,7 +73,7 @@ coreos:
             --name etcd \
             -v /opt/etcd:/opt/etcd \
             -v /usr/share/ca-certificates/:/etc/ssl/certs \
-            quay.io/coreos/etcd:v2.0.5 \
+            quay.io/coreos/etcd:${ETCD_VER} \
             -data-dir /opt/etcd \
             -name __NAME__ \
             -listen-client-urls http://0.0.0.0:2379,http://0.0.0.0:4001 \
