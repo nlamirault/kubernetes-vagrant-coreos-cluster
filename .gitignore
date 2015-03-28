@@ -1,4 +1,4 @@
 .vagrant
 .dockercfg
 kubLocalSetup
-dns/dns-controller
+dns/dns-controller.yaml
