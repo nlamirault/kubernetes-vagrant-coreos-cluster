@@ -151,7 +151,12 @@ Right now, the available environment variables are:
  - **KUBERNETES_VERSION** defines the specific kubernetes version being used.
 
    Defaults to *latest* released version.
+ - **DNS_REPLICAS** sets the size of the internal DNS cluster.
 
+   Defaults to *2*.
+ - **DNS_DOMAIN** sets the name of the internal (to k8s) dns domain name.
+
+   Defaults to **k8s.local**
 
 So, in order to start, say, a Kubernetes cluster with 3 minion nodes, 2GB of RAM and 2 vCPUs per node one just would do...
 

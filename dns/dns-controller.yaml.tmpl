@@ -6,7 +6,7 @@ labels:
   k8s-app: k8s-dns
   kubernetes.io/cluster-service: "true"
 desiredState:
-  replicas: 1
+  replicas: __DNS_REPLICAS__
   replicaSelector:
     k8s-app: k8s-dns
   podTemplate:
@@ -24,14 +24,14 @@ desiredState:
             image: kubernetes/kube2sky:1.1
             command: [
                     "-etcd-server=http://__MASTER_IP__:2379",
-                    "-domain=k8s",
+                    "-domain=__DNS_DOMAIN__",
             ]
           - name: skydns
             image: kubernetes/skydns:2015-03-11-001
             command: [
                     "-machines=http://__MASTER_IP__:2379",
                     "-addr=0.0.0.0:53",
-                    "-domain=k8s",
+                    "-domain=__DNS_DOMAIN__",
             ]
             ports:
               - name: dns

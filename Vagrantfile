@@ -86,6 +86,9 @@ GUI = (ENV['GUI'].to_s.downcase == 'true')
 
 BASE_IP_ADDR = ENV['BASE_IP_ADDR'] || "172.17.8"
 
+DNS_REPLICAS = ENV['DNS_REPLICAS'] || 2
+DNS_DOMAIN = ENV['DNS_DOMAIN'] || "k8s.local"
+
 (1..(NUM_INSTANCES.to_i + 1)).each do |i|
   case i
   when 1
@@ -188,6 +191,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           system <<-EOT.prepend("\n\n") + "\n"
             cd dns
             sed -e "s|__MASTER_IP__|#{MASTER_IP}|g" \
+                -e "s|__DNS_REPLICAS|#{DNS_REPLICAS}|g" \
+                -e "s|__DNS_DOMAIN|#{DNS_DOMAIN}|g" \
               dns-controller.yaml.tmpl > dns-controller.yaml
             cd ..
             $(./kubLocalSetup shellinit)
