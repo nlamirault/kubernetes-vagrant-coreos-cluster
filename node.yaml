@@ -173,6 +173,8 @@ coreos:
           --hostname_override=$public_ipv4 \
           --api_servers=__MASTER_IP__:8080 \
           --allow_privileged=true \
+          --cluster_dns=10.100.0.10 \
+          --cluster_domain=k8s \
           --logtostderr=true
         Restart=always
         RestartSec=10

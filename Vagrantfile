@@ -183,6 +183,30 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           EOT
           info "making sure localhosts' 'kubectl' matches what we just booted..."
           system "./kubLocalSetup install"
+          info "configuring k8s internal dns service"
+          info "(may take a bit, as we have to wait for the cluster be fully up)"
+          system <<-EOT.prepend("\n\n") + "\n"
+            cd dns
+            sed -e "s|__MASTER_IP__|#{MASTER_IP}|g" \
+              dns-controller.yaml.tmpl > dns-controller.yaml
+            cd ..
+            $(./kubLocalSetup shellinit)
+            until curl -o /dev/null -sIf http://#{MASTER_IP}:8080; do \
+              sleep 1;
+            done;
+            kubectl create -f dns/dns-controller.yaml
+            kubectl create -f dns/dns-service.yaml
+          EOT
+        end
+        kHost.trigger.after [:up, :resume] do
+          info "============================================================================="
+          info ""
+          info "  please don't forget to run '$(./kubLocalSetup shellinit)' "
+          info "                                                                             "
+          info "  see the documentation at"
+          info "    https://github.com/AntonioMeireles/kubernetes-vagrant-coreos-cluster/    "
+          info ""
+          info "============================================================================="
         end
       end
 
