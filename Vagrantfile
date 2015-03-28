@@ -186,8 +186,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           EOT
           info "making sure localhosts' 'kubectl' matches what we just booted..."
           system "./kubLocalSetup install"
+          info "waiting for the cluster to be fully up..."
+          system <<-EOT.prepend("\n\n") + "\n"
+            until curl -o /dev/null -sIf http://#{MASTER_IP}:8080; do \
+              sleep 1;
+            done;
+          EOT
           info "configuring k8s internal dns service"
-          info "(may take a bit, as we have to wait for the cluster be fully up)"
           system <<-EOT.prepend("\n\n") + "\n"
             cd dns
             sed -e "s|__MASTER_IP__|#{MASTER_IP}|g" \
@@ -196,11 +201,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
               dns-controller.yaml.tmpl > dns-controller.yaml
             cd ..
             $(./kubLocalSetup shellinit)
-            until curl -o /dev/null -sIf http://#{MASTER_IP}:8080; do \
-              sleep 1;
-            done;
-            kubectl create -f dns/dns-controller.yaml
-            kubectl create -f dns/dns-service.yaml
+            kubectl create -f dns/dns-controller.yaml &>/dev/null
+            kubectl create -f dns/dns-service.yaml &>/dev/null
           EOT
         end
         kHost.trigger.after [:up, :resume] do
