@@ -1,7 +1,8 @@
 # kubernetes-vagrant-coreos-cluster
 Turnkey **[Kubernetes](https://github.com/GoogleCloudPlatform/kubernetes)**
 cluster setup with **[Vagrant](https://www.vagrantup.com)** (1.7.2+) and
-**[CoreOS](https://coreos.com)**.
+**[CoreOS](https://coreos.com)** with built-in DNS and monitoring
+services.
 
 #### current status
 > due to some changes in *kube-proxy* invocation semantics current *tip* of this
