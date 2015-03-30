@@ -112,35 +112,14 @@ coreos:
     - name: rpc-statd.service
       command: start
       enable: true
-    - name: cadvisor.service
-      command: start
-      content: |
-        [Unit]
-        Description=cAdvisor Service
-        After=docker.service
-        Requires=docker.service
-
-        [Service]
-        Restart=always
-        ExecStartPre=-/usr/bin/docker kill cadvisor
-        ExecStartPre=-/usr/bin/docker rm -f cadvisor
-        ExecStartPre=/usr/bin/docker pull google/cadvisor
-        ExecStart=/usr/bin/docker run --name cadvisor \
-          -v=/:/rootfs:ro \
-          -v=/var/run:/var/run:rw \
-          -v=/sys:/sys:ro \
-          -v=/var/lib/docker/:/var/lib/docker:ro \
-          -p=4194:4194 --net=host google/cadvisor:latest \
-          --port=4194
-        ExecStop=/usr/bin/docker stop -t 2 cadvisor
     - name: kube-proxy.service
       command: start
       content: |
         [Unit]
         Description=Kubernetes Proxy
         Documentation=https://github.com/GoogleCloudPlatform/kubernetes
-        Requires=setup-network-environment.service cadvisor.service
-        After=setup-network-environment.service cadvisor.service
+        Requires=setup-network-environment.service
+        After=setup-network-environment.service
 
         [Service]
         ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/__RELEASE__/bin/linux/amd64/kube-proxy
@@ -158,8 +137,8 @@ coreos:
         [Unit]
         Description=Kubernetes Kubelet
         Documentation=https://github.com/GoogleCloudPlatform/kubernetes
-        Requires=setup-network-environment.service cadvisor.service
-        After=setup-network-environment.service cadvisor.service
+        Requires=setup-network-environment.service
+        After=setup-network-environment.service
 
         [Service]
         EnvironmentFile=/etc/network-environment
@@ -175,7 +154,9 @@ coreos:
           --allow_privileged=true \
           --cluster_dns=10.100.0.10 \
           --cluster_domain=k8s \
-          --logtostderr=true
+          --logtostderr=true \
+          --config=/opt/kubernetes/manifests/ \
+          --cadvisor_port=4194
         Restart=always
         RestartSec=10
   update:
