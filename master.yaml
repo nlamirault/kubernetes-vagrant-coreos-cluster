@@ -160,6 +160,7 @@ coreos:
         --portal_net=10.100.0.0/16 \
         --etcd_servers=http://127.0.0.1:2379 \
         --public_address_override=__MASTER_IP__ \
+        --runtime_config=api/v1beta3 \
         --logtostderr=true
         Restart=always
         RestartSec=10
