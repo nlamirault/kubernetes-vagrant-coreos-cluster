@@ -21,13 +21,13 @@ desiredState:
         dnsPolicy: "Default"  # Don't use cluster DNS.
         containers:
           - name: kube2sky
-            image: kubernetes/kube2sky:1.1
+            image: gcr.io/google-containers/kube2sky:1.1
             command: [
                     "-etcd-server=http://__MASTER_IP__:2379",
                     "-domain=__DNS_DOMAIN__",
             ]
           - name: skydns
-            image: kubernetes/skydns:2015-03-11-001
+            image: gcr.io/google-containers/skydns:2015-03-11-001
             command: [
                     "-machines=http://__MASTER_IP__:2379",
                     "-addr=0.0.0.0:53",
