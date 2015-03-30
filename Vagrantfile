@@ -199,10 +199,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                 -e "s|__DNS_REPLICAS|#{DNS_REPLICAS}|g" \
                 -e "s|__DNS_DOMAIN|#{DNS_DOMAIN}|g" \
               dns-controller.yaml.tmpl > dns-controller.yaml
-            cd ..
+            cd ../..
             $(./kubLocalSetup shellinit)
-            kubectl create -f defaultServices/dns/dns-controller.yaml &>/dev/null
-            kubectl create -f defaultServices/dns/dns-service.yaml &>/dev/null
+            kubectl create -f defaultServices/dns/dns-controller.yaml
+            kubectl create -f defaultServices/dns/dns-service.yaml
+          EOT
+          info "configuring k8s internal monitoring tools"
+          system <<-EOT.prepend("\n\n") + "\n"
+            $(./kubLocalSetup shellinit)
+            kubectl create -f defaultServices/cluster-monitoring/grafana-service.yaml
+            kubectl create -f defaultServices/cluster-monitoring/heapster-service.yaml
+            kubectl create -f defaultServices/cluster-monitoring/influxdb-service.yaml
+            kubectl create -f defaultServices/cluster-monitoring/heapster-controller.yaml
+            kubectl create -f defaultServices/cluster-monitoring/influxdb-grafana-controller.yaml
           EOT
         end
         kHost.trigger.after [:up, :resume] do
