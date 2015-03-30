@@ -146,18 +146,22 @@ Right now, the available environment variables are:
    **KUBERNETES_VERSION** is the *latest* available 'pre-release', otherwise is the
    *latest* available 'release'.
 
-   Defaults to *false*. This is IMHO a bit saner than having to constantly
+   Defaults to ***false***. This is IMHO a bit saner than having to constantly
    hard-code specific versions and in any case the *latest* formal kubernetes
    release should be a good and reasonable, reference point.
  - **KUBERNETES_VERSION** defines the specific kubernetes version being used.
 
-   Defaults to *latest* released version.
+   Defaults to ***latest*** released version.
  - **DNS_REPLICAS** sets the size of the internal DNS cluster.
 
-   Defaults to *2*.
+   Defaults to **2**.
  - **DNS_DOMAIN** sets the name of the internal (to k8s) dns domain name.
 
    Defaults to **k8s.local**
+ - **DNS_UPSTREAM_SERVERS** set a (comma separated) list of name servers to forward DNS requests to when the internal DNS is not authoritative for a domain.
+
+   Defaults to **8.8.8.8:53,8.8.4.4:53**, Googles' public [DNS service]
+   (https://developers.google.com/speed/public-dns/docs/using).
 
 So, in order to start, say, a Kubernetes cluster with 3 minion nodes, 2GB of RAM and 2 vCPUs per node one just would do...
 
