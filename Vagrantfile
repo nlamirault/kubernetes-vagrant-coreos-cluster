@@ -194,15 +194,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           EOT
           info "configuring k8s internal dns service"
           system <<-EOT.prepend("\n\n") + "\n"
-            cd dns
+            cd defaultServices/dns
             sed -e "s|__MASTER_IP__|#{MASTER_IP}|g" \
                 -e "s|__DNS_REPLICAS|#{DNS_REPLICAS}|g" \
                 -e "s|__DNS_DOMAIN|#{DNS_DOMAIN}|g" \
               dns-controller.yaml.tmpl > dns-controller.yaml
             cd ..
             $(./kubLocalSetup shellinit)
-            kubectl create -f dns/dns-controller.yaml &>/dev/null
-            kubectl create -f dns/dns-service.yaml &>/dev/null
+            kubectl create -f defaultServices/dns/dns-controller.yaml &>/dev/null
+            kubectl create -f defaultServices/dns/dns-service.yaml &>/dev/null
           EOT
         end
         kHost.trigger.after [:up, :resume] do
