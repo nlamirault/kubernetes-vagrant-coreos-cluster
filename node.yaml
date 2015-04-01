@@ -24,6 +24,10 @@ coreos:
     interface: eth1
 
   units:
+    - name: rpcbind.service
+      command: start
+    - name: rpc-statd.service
+      command: start
     - name: setup-network-environment.service
       command: start
       content: |
