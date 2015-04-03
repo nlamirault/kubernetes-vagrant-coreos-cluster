@@ -5,11 +5,11 @@ cluster setup with **[Vagrant](https://www.vagrantup.com)** (1.7.2+) and
 services.
 
 #### current status
-> - current pre-release (**0.14.0**) is not working (*minions* are not
->   getting registered) pending an *upstream*
->   [bug](kelseyhightower/kube-register#13)
->   (GoogleCloudPlatform/kubernetes/issues#6212)fix in
->   **[kube-register](http://github.com/kelseyhightower/kube-register)**.
+> - the latest pre-releases (**0.14.x**) are not working (*minions* are not
+>   getting registered) due to upstream breakage about to be fixed soon.  
+>   (the ongoing discussion and progress can be followed
+>   [here](GoogleCloudPlatform/kubernetes#6212)
+>   and [here](kelseyhightower/kube-register#13)).
 > - due to changes in *kube-proxy* invocation semantics current *tip* of
 >   this repository only works with kubernetes' versions **0.13.x** or higher.  
 >   If you wish to test older versions (up to **0.12.1**) please use
