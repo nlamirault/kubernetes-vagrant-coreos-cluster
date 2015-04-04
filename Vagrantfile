@@ -176,6 +176,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         kHost.trigger.after [:up, :resume] do
           info "making sure ssh agent has the default vagrant key..."
           system "ssh-add ~/.vagrant.d/insecure_private_key"
+          info "making sure local fleetctl won't misbehave with old staled data..."
+          info "(wiping old ~/.fleetctl/known_hosts)"
+          system "rm -rf ~/.fleetctl/known_hosts"
         end
         kHost.trigger.after [:up] do
           info "regenerating kubLocalSetup"
