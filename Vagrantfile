@@ -20,9 +20,7 @@ def getK8Sreleases()
     if KUBERNETES_ALLOW_PRERELEASES
       item['tag_name'].gsub('v', '')
     else
-      if item['prerelease'] == false
-        item['tag_name'].gsub('v', '')
-      end
+      item['tag_name'].gsub('v', '') if item['prerelease'] == false
     end
   }.compact
 end
@@ -91,16 +89,13 @@ DNS_DOMAIN = ENV['DNS_DOMAIN'] || "k8s.local"
 DNS_UPSTREAM_SERVERS = ENV['DNS_UPSTREAM_SERVERS'] || "8.8.8.8:53,8.8.4.4:53"
 
 (1..(NUM_INSTANCES.to_i + 1)).each do |i|
-  case i
-  when 1
+  if i == 1
     ETCD_SEED_CLUSTER = ""
     hostname = "master"
   else
     hostname = ",node-%02d" % (i - 1)
   end
-  if i <= ETCD_CLUSTER_SIZE
-    ETCD_SEED_CLUSTER.concat("#{hostname}=http://#{BASE_IP_ADDR}.#{i+100}:2380")
-  end
+  ETCD_SEED_CLUSTER.concat("#{hostname}=http://#{BASE_IP_ADDR}.#{i+100}:2380") if i <= ETCD_CLUSTER_SIZE
 end
 
 # Read YAML file with mountpoint details
@@ -138,9 +133,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # plugin conflict
-  if Vagrant.has_plugin?("vagrant-vbguest") then
-    config.vbguest.auto_update = false
-  end
+  config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 
   (1..(NUM_INSTANCES.to_i + 1)).each do |i|
     if i == 1
@@ -281,15 +274,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           mount_options = ""
           disabled = false
           nfs =  true
-          if mount['mount_options']
-            mount_options = mount['mount_options']
-          end
-          if mount['disabled']
-            disabled = mount['disabled']
-          end
-          if mount['nfs']
-            nfs = mount['nfs']
-          end
+          mount_options = mount['mount_options'] if mount['mount_options']
+          disabled = mount['disabled'] if mount['disabled']
+          nfs = mount['nfs'] if mount['nfs']
+
           if File.exist?(File.expand_path("#{mount['source']}"))
             if mount['destination']
               kHost.vm.synced_folder "#{mount['source']}", "#{mount['destination']}",
