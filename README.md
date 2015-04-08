@@ -5,17 +5,10 @@ cluster setup with **[Vagrant](https://www.vagrantup.com)** (1.7.2+) and
 services.
 
 #### current status
-> - the latest pre-releases (**0.14.x**) are not working (*minions* are not
->   getting registered) due to upstream breakage about to be fixed soon.  
->   (the ongoing discussion and progress can be followed
->   [here](GoogleCloudPlatform/kubernetes#6212)
->   and [here](kelseyhightower/kube-register#13)).
-> - due to changes in *kube-proxy* invocation semantics current *tip* of
->   this repository only works with kubernetes' versions **0.13.x** or higher.  
->   If you wish to test older versions (up to **0.12.1**) please use
->   [566441959c221](https://github.com/AntonioMeireles/kubernetes-vagrant-coreos-cluster/commit/566441959c221c13188152bd2fe708a240a3ce4c) checkout.
->   (see [here](#customization) for notes regarding how to run specific k8s
->   versions)
+> - the latest release (**0.14.1**) is not working (*minions* are not
+>   getting registered) due to *upstream* breakage, which will be
+>   [fixed](GoogleCloudPlatform/kubernetes#6212) in the upcoming 0.14.2 one.  
+>   in the meantime just *do* `KUBERNETES_VERSION=0.13.2 vup`
 
 ####If you're lazy, or in a hurry, jump to the [TL;DR](#tldr) section.
 
