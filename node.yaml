@@ -58,7 +58,7 @@ coreos:
         RestartSec=5
         Environment="TMPDIR=/var/tmp/"
         Environment="DOCKER_HOST=unix:///var/run/early-docker.sock"
-        Environment="ETCD_VER=v2.0.8"
+        Environment="ETCD_VER=v2.0.9"
         EnvironmentFile=/etc/environment
         TimeoutStartSec=0
         SyslogIdentifier=writer_process
