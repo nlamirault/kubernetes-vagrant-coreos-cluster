@@ -5,10 +5,13 @@ cluster setup with **[Vagrant](https://www.vagrantup.com)** (1.7.2+) and
 services.
 
 #### current status
-> - the latest release (**0.14.1**) is not working (*minions* are not
->   getting registered) due to *upstream* breakage, which will be
->   [fixed](GoogleCloudPlatform/kubernetes#6212) in the upcoming 0.14.2 one.  
->   in the meantime just *do* `KUBERNETES_VERSION=0.13.2 vup`
+> - due to [this](GoogleCloudPlatform/kubernetes#6212) bug all releases and
+>   pre-releases higher than **0.13.2** and lower than **0.14.2** weren't working
+>   properly, as *minions* weren't able to get registered. this got fixed in
+>   **0.14.2**, already shipping and tagged as a pre-release.
+>
+>   in the meantime just *do* `KUBERNETES_VERSION=0.13.2 vup` or, in order to
+>   consume **0.14.2**, `KUBERNETES_ALLOW_PRERELEASES=true NODE_MEM=2048 vup `.
 
 ####If you're lazy, or in a hurry, jump to the [TL;DR](#tldr) section.
 
