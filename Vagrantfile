@@ -157,6 +157,26 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       # in the master (re: emyl/vagrant-triggers#13)...
       if vmName == "master"
         kHost.trigger.before [:up, :provision] do
+          info "regenerating kubLocalSetup"
+          system <<-EOT.prepend("\n\n") + "\n"
+            cat kubLocalSetup.tmpl | \
+             sed -e "s|__KUBERNETES_VERSION__|#{KUBERNETES_VERSION}|g" \
+                 -e "s|__MASTER_IP__|#{MASTER_IP}|g" > kubLocalSetup
+             chmod +x kubLocalSetup
+          EOT
+          info "making sure localhosts' 'kubectl' matches what we just booted..."
+          system "./kubLocalSetup install"
+        end
+        # GoogleCloudPlatform/kubernetes#6380
+        # blob bellow coming from stock + https://github.com/kelseyhightower/kube-register#15
+        kHost.vm.provision :file, :source => "kube-register", :destination => "/tmp/kube-register"
+        kHost.vm.provision :shell, :privileged => true,
+          inline: <<-EOF
+            echo "using customized kube-register to get post 0.15.x"
+            chmod +x /tmp/kube-register
+          EOF
+
+        kHost.trigger.before [:up, :provision] do
           info "checking host platform..."
           system <<-EOT.prepend("\n\n") + "\n"
             which uname &>/dev/null || \
@@ -174,15 +194,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           system "rm -rf ~/.fleetctl/known_hosts"
         end
         kHost.trigger.after [:up] do
-          info "regenerating kubLocalSetup"
-          system <<-EOT.prepend("\n\n") + "\n"
-            cat kubLocalSetup.tmpl | \
-             sed -e "s|__KUBERNETES_VERSION__|#{KUBERNETES_VERSION}|g" \
-                 -e "s|__MASTER_IP__|#{MASTER_IP}|g" > kubLocalSetup
-             chmod +x kubLocalSetup
-          EOT
-          info "making sure localhosts' 'kubectl' matches what we just booted..."
-          system "./kubLocalSetup install"
           info "waiting for the cluster to be fully up..."
           system <<-EOT.prepend("\n\n") + "\n"
             until curl -o /dev/null -sIf http://#{MASTER_IP}:8080; do \
