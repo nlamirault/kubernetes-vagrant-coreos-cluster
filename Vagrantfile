@@ -95,7 +95,6 @@ when "gce", "gke", "aws", "azure", "vagrant", "sphere", "libvirt-coreos", "juju"
 else
     CLOUD_PROVIDER = 'vagrant'
 end
-puts "Cloud provider: #{CLOUD_PROVIDER}"
 
 (1..(NUM_INSTANCES.to_i + 1)).each do |i|
   if i == 1
