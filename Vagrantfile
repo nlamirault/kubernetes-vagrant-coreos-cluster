@@ -88,6 +88,15 @@ DNS_REPLICAS = ENV['DNS_REPLICAS'] || 2
 DNS_DOMAIN = ENV['DNS_DOMAIN'] || "k8s.local"
 DNS_UPSTREAM_SERVERS = ENV['DNS_UPSTREAM_SERVERS'] || "8.8.8.8:53,8.8.4.4:53"
 
+tempCloudProvider = (ENV['CLOUD_PROVIDER'].to_s.downcase)
+case tempCloudProvider
+when "gce", "gke", "aws", "azure", "vagrant", "sphere", "libvirt-coreos", "juju"
+  CLOUD_PROVIDER = tempCloudProvider
+else
+    CLOUD_PROVIDER = 'vagrant'
+end
+puts "Cloud provider: #{CLOUD_PROVIDER}"
+
 (1..(NUM_INSTANCES.to_i + 1)).each do |i|
   if i == 1
     ETCD_SEED_CLUSTER = ""
@@ -321,6 +330,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           sed -i "s,__NAME__,#{hostname},g" /tmp/vagrantfile-user-data
           sed -i "s|__ETCD_SEED_CLUSTER__|#{ETCD_SEED_CLUSTER}|g" /tmp/vagrantfile-user-data
           sed -i "s|__MASTER_IP__|#{MASTER_IP}|g" /tmp/vagrantfile-user-data
+          sed -i "s,__CLOUDPROVIDER__,#{CLOUD_PROVIDER},g" /tmp/vagrantfile-user-data
           mv /tmp/vagrantfile-user-data /var/lib/coreos-vagrant/
         EOF
       end

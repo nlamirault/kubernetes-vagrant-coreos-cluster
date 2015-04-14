@@ -170,6 +170,7 @@ coreos:
         --etcd_servers=http://127.0.0.1:2379 \
         --public_address_override=__MASTER_IP__ \
         --runtime_config=api/v1beta3 \
+        --cloud_provider=__CLOUDPROVIDER__ \
         --logtostderr=true
         Restart=always
         RestartSec=10
