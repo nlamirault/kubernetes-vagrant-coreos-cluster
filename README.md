@@ -155,7 +155,7 @@ Right now, the available environment variables are:
    Defaults to ***latest*** released version.
  - **DNS_REPLICAS** sets the size of the internal DNS cluster.
 
-   Defaults to **2**.
+   Defaults to **1**.
  - **DNS_DOMAIN** sets the name of the internal (to k8s) dns domain name.
 
    Defaults to **k8s.local**
