@@ -162,8 +162,10 @@ coreos:
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-apiserver
         ExecStart=/opt/bin/kube-apiserver \
         --allow_privileged=true \
-        --address=0.0.0.0 \
-        --port=8080 \
+        --insecure_bind_address=0.0.0.0 \
+        --insecure_port=8080 \
+        --kubelet_https=true \
+        --secure_port=6443 \
         --portal_net=10.100.0.0/16 \
         --etcd_servers=http://127.0.0.1:2379 \
         --public_address_override=__MASTER_IP__ \

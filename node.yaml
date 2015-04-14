@@ -160,7 +160,10 @@ coreos:
           --cluster_domain=k8s \
           --logtostderr=true \
           --config=/opt/kubernetes/manifests/ \
-          --cadvisor_port=4194
+          --cadvisor_port=4194 \
+          --port=10250 \
+          --healthz_bind_address=0.0.0.0 \
+          --healthz_port=10248
         Restart=always
         RestartSec=10
   update:
