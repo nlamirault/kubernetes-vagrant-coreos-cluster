@@ -175,17 +175,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           info "making sure localhosts' 'kubectl' matches what we just booted..."
           system "./kubLocalSetup install"
         end
-        # GoogleCloudPlatform/kubernetes#6380
-        # GoogleCloudPlatform/kubernetes#6851
-        # blob bellow coming from tip https://github.com/kelseyhightower/kube-register until 
-        # storage.googleapis.com/k8s/kube-register gets updated
-        kHost.vm.provision :file, :source => "blobs/kube-register", :destination => "/tmp/kube-register"
-        kHost.vm.provision :shell, :privileged => true,
-          inline: <<-EOF
-            echo "using customized kube-register to get post 0.15.x"
-            chmod +x /tmp/kube-register
-          EOF
-
         kHost.trigger.before [:up, :provision] do
           info "checking host platform..."
           system <<-EOT.prepend("\n\n") + "\n"
