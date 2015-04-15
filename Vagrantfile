@@ -177,7 +177,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
         # GoogleCloudPlatform/kubernetes#6380
         # GoogleCloudPlatform/kubernetes#6851
-        # blob bellow coming from stock + https://github.com/kelseyhightower/kube-register#15
+        # blob bellow coming from tip https://github.com/kelseyhightower/kube-register until 
+        # storage.googleapis.com/k8s/kube-register gets updated
         kHost.vm.provision :file, :source => "blobs/kube-register", :destination => "/tmp/kube-register"
         kHost.vm.provision :shell, :privileged => true,
           inline: <<-EOF
