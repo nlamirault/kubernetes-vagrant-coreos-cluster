@@ -176,8 +176,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           system "./kubLocalSetup install"
         end
         # GoogleCloudPlatform/kubernetes#6380
+        # GoogleCloudPlatform/kubernetes#6851
         # blob bellow coming from stock + https://github.com/kelseyhightower/kube-register#15
-        kHost.vm.provision :file, :source => "kube-register", :destination => "/tmp/kube-register"
+        kHost.vm.provision :file, :source => "blobs/kube-register", :destination => "/tmp/kube-register"
         kHost.vm.provision :shell, :privileged => true,
           inline: <<-EOF
             echo "using customized kube-register to get post 0.15.x"
