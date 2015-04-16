@@ -48,7 +48,7 @@ coreos:
         ExecStart=/opt/bin/setup-network-environment
         RemainAfterExit=yes
         Type=oneshot
-    - name: etcd.service
+    - name: etcd2.service
       command: start
       content: |
         [Unit]
@@ -99,7 +99,7 @@ coreos:
         - name: 50-network-config.conf
           content: |
             [Unit]
-            Requires=etcd.service
+            Requires=etcd2.service
             [Service]
             ExecStartPre=/usr/bin/etcdctl set /coreos.com/network/config '{"Network":"10.244.0.0/16", "Backend": {"Type": "vxlan"}}'
     - name: docker-cache.service
@@ -152,9 +152,9 @@ coreos:
         [Unit]
         Description=Kubernetes API Server
         Documentation=https://github.com/GoogleCloudPlatform/kubernetes
-        Requires=etcd.service docker-cache.service fleet.service docker.service
+        Requires=etcd2.service docker-cache.service fleet.service docker.service
         Requires=flanneld.service
-        After=etcd.service docker-cache.service fleet.service docker.service
+        After=etcd2.service docker-cache.service fleet.service docker.service
         After=flanneld.service
         [Service]
         ExecStartPre=-/usr/bin/mkdir -p /opt/bin
