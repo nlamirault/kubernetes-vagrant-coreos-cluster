@@ -77,8 +77,6 @@ MASTER_CPUS = ENV['MASTER_CPUS'] || 1
 NODE_MEM= ENV['NODE_MEM'] || 1024
 NODE_CPUS = ENV['NODE_CPUS'] || 1
 
-ETCD_CLUSTER_SIZE = ENV['ETCD_CLUSTER_SIZE'] || 3
-
 SERIAL_LOGGING = (ENV['SERIAL_LOGGING'].to_s.downcase == 'true')
 GUI = (ENV['GUI'].to_s.downcase == 'true')
 
@@ -98,12 +96,11 @@ end
 
 (1..(NUM_INSTANCES.to_i + 1)).each do |i|
   if i == 1
-    ETCD_SEED_CLUSTER = ""
     hostname = "master"
+    ETCD_SEED_CLUSTER = "#{hostname}=http://#{BASE_IP_ADDR}.#{i+100}:2380"
   else
     hostname = ",node-%02d" % (i - 1)
   end
-  ETCD_SEED_CLUSTER.concat("#{hostname}=http://#{BASE_IP_ADDR}.#{i+100}:2380") if i <= ETCD_CLUSTER_SIZE
 end
 
 # Read YAML file with mountpoint details

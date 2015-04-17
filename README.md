@@ -146,10 +146,6 @@ Right now, the available environment variables are:
    by running `docker login <registry>.<domain>`. All nodes will get it automatically,
    at 'vagrant up', given any modification or update to that file.
 
- - **ETCD_CLUSTER_SIZE** sets the number of nodes in the default built-in etcd
-   cluster.
-
-   Defaults to **3** (or the total number of nodes of the cluster if lower).
  - **KUBERNETES_ALLOW_PRERELEASES** if *true* then the *latest*
    **KUBERNETES_VERSION** is the *latest* available 'pre-release', otherwise is the
    *latest* available 'release'.
