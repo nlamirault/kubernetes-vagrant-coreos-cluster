@@ -29,7 +29,6 @@ coreos:
     initial-cluster-state: new
   fleet:
     public-ip: $public_ipv4
-    etcd-servers: http://$private_ipv4:2379
     metadata: "role=master"
   flannel:
     interface: eth1

@@ -23,7 +23,6 @@ coreos:
     proxy: on
   fleet:
     public-ip: $public_ipv4
-    etcd-servers: http://$private_ipv4:2379
     metadata: "role=minion"
   flannel:
     interface: eth1
