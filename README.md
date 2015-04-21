@@ -8,11 +8,8 @@ services.
 > - **[0.15.0](https://github.com/GoogleCloudPlatform/kubernetes/releases/tag/v0.15.0)**
 >   introduced a number of changes not backward compatible with previous
 >   releases. so, since we only ship, at this time, one set of, node and master,
->   *cloud-configs* **0.15.0**, currently tagged as a *pre-release*, is the only
+>   *cloud-configs* **0.15.0**, the **latest** release, is the only
 >   version running on *tip*.
->
->   Due to this you 'll have to start your cluster with `KUBERNETES_ALLOW_PRERELEASES=true`
->   alike `KUBERNETES_ALLOW_PRERELEASES=true NODE_MEM=2048 vup `.
 >
 > - **[CoreOS alpha 653.0.0](https://github.com/coreos/manifest/releases/tag/v653.0.0)**
 >   switched to the etcd 2.0.x stream. Due to that, and albeit we're still
