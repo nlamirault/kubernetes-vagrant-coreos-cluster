@@ -13,6 +13,10 @@ class Module
   end
 end
 
+if (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
+  abort "You're running on windows, an unsupported platform. Exiting..."
+end
+
 def getK8Sreleases()
   url = "https://api.github.com/repos/GoogleCloudPlatform/kubernetes/releases"
   json =  JSON.load(open(url))
