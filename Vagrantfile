@@ -221,6 +221,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             kubectl create -f defaultServices/cluster-monitoring/influxdb-service.yaml
             kubectl create -f defaultServices/cluster-monitoring/heapster-controller.yaml
             kubectl create -f defaultServices/cluster-monitoring/influxdb-grafana-controller.yaml
+            kubectl create -f defaultServices/cluster-monitoring/influxdb-ui-service.yaml
           EOT
         end
         kHost.trigger.after [:up, :resume] do
