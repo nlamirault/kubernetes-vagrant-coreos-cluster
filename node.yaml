@@ -107,6 +107,7 @@ coreos:
         EnvironmentFile=/etc/network-environment
         ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/__RELEASE__/bin/linux/amd64/kubelet
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kubelet
+        ExecStartPre=/usr/bin/mkdir -p /opt/kubernetes/manifests/
         # wait for kubernetes master to be up and ready
         ExecStartPre=/opt/bin/wupiao __MASTER_IP__ 8080
         ExecStart=/opt/bin/kubelet \
@@ -117,6 +118,7 @@ coreos:
           --allow_privileged=true \
           --cluster_dns=10.100.0.10 \
           --cluster_domain=__DNS_DOMAIN__ \
+          --cloud_provider=__CLOUDPROVIDER__ \
           --logtostderr=true \
           --config=/opt/kubernetes/manifests/ \
           --cadvisor_port=4194 \
