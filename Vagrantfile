@@ -90,13 +90,11 @@ DNS_REPLICAS = ENV['DNS_REPLICAS'] || 1
 DNS_DOMAIN = ENV['DNS_DOMAIN'] || "k8s.local"
 DNS_UPSTREAM_SERVERS = ENV['DNS_UPSTREAM_SERVERS'] || "8.8.8.8:53,8.8.4.4:53"
 
-tempCloudProvider = (ENV['CLOUD_PROVIDER'].to_s.downcase)
-case tempCloudProvider
-when "gce", "gke", "aws", "azure", "vagrant", "sphere", "libvirt-coreos", "juju"
-  CLOUD_PROVIDER = tempCloudProvider
-else
-    CLOUD_PROVIDER = 'vagrant'
-end
+CLOUD_PROVIDER = ENV['CLOUD_PROVIDER'].to_s.downcase || 'vagrant'
+validCloudProviders = [ 'gce', 'gke', 'aws', 'azure', 'vagrant', 'vsphere',
+  'libvirt-coreos', 'juju' ]
+Object.redefine_const(:CLOUD_PROVIDER,
+  'vagrant') unless validCloudProviders.include?(CLOUD_PROVIDER)
 
 (1..(NUM_INSTANCES.to_i + 1)).each do |i|
   if i == 1
