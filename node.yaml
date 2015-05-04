@@ -25,7 +25,7 @@ coreos:
     public-ip: $public_ipv4
     metadata: "role=minion"
   flannel:
-    interface: eth1
+    interface: $public_ipv4
 
   units:
     - name: rpcbind.service
