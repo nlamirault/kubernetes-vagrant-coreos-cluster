@@ -215,11 +215,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           system <<-EOT.prepend("\n\n") + "\n"
             $(./kubLocalSetup shellinit)
             kubectl create -f defaultServices/cluster-monitoring/grafana-service.yaml
-            kubectl create -f defaultServices/cluster-monitoring/heapster-service.yaml
             kubectl create -f defaultServices/cluster-monitoring/influxdb-service.yaml
             kubectl create -f defaultServices/cluster-monitoring/heapster-controller.yaml
             kubectl create -f defaultServices/cluster-monitoring/influxdb-grafana-controller.yaml
-            kubectl create -f defaultServices/cluster-monitoring/influxdb-ui-service.yaml
           EOT
         end
         kHost.trigger.after [:up, :resume] do

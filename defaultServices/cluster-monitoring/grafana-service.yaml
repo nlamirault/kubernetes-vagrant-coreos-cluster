@@ -4,13 +4,12 @@ metadata:
   labels: 
     name: influxGrafana
     kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "Grafana"
   name: monitoring-grafana
 spec: 
-  ports:
+  ports: 
     - port: 80
       targetPort: 8080
   selector: 
     name: influxGrafana
-    kubernetes.io/cluster-service: "true"
-
 
