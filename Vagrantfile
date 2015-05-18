@@ -205,11 +205,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                 -e "s|__DNS_REPLICAS__|#{DNS_REPLICAS}|g" \
                 -e "s|__DNS_DOMAIN__|#{DNS_DOMAIN}|g" \
                 -e "s|__DNS_UPSTREAM_SERVERS__|#{DNS_UPSTREAM_SERVERS}|g" \
-              dns-controller.yaml.tmpl > dns-controller.yaml
+              skydns-rc.yaml.in > dns-controller.yaml
             cd ../..
             $(./kubLocalSetup shellinit)
             kubectl create -f defaultServices/dns/dns-controller.yaml
-            kubectl create -f defaultServices/dns/dns-service.yaml
+            kubectl create -f defaultServices/dns/skydns-svc.yaml.in
           EOT
           info "configuring k8s internal monitoring tools"
           system <<-EOT.prepend("\n\n") + "\n"
