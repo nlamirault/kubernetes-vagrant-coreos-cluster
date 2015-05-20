@@ -29,6 +29,29 @@ def getK8Sreleases()
   }.compact
 end
 
+def checkResponse(host, port, expectValidResponse = true, description = "",
+  attempts = 50)
+  hasResponse = false
+  target = "http://#{host}:#{port}"
+  txt  = "#{target} "
+  txt += "(#{description})" if description
+  j, uri, res = 0, URI(target), nil
+
+  loop do
+    j += 1
+    begin
+      res = Net::HTTP.get_response(uri)
+      rescue Net::HTTPBadResponse
+        hasResponse = true if not expectValidResponse
+      rescue
+        sleep 10
+    end
+    break if hasResponse or res.is_a? Net::HTTPSuccess or j >= attempts
+  end
+  mesg = "WARNING: something going wrong - #{txt} taking too long to respond."
+  puts "#{mesg}" if j >= attempts
+end
+
 required_plugins = %w(vagrant-triggers)
 required_plugins.each do |plugin|
   need_restart = false
@@ -192,12 +215,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           system "rm -rf ~/.fleetctl/known_hosts"
         end
         kHost.trigger.after [:up] do
-          info "waiting for the cluster to be fully up..."
-          system <<-EOT.prepend("\n\n") + "\n"
-            until curl -o /dev/null -sIf http://#{MASTER_IP}:8080; do \
-              sleep 1;
-            done;
-          EOT
+          info "waiting for the master to be ready..."
+          checkResponse(MASTER_IP, 8080, true, "kubernetes' master")
           info "configuring k8s internal dns service"
           system <<-EOT.prepend("\n\n") + "\n"
             cd defaultServices/dns
@@ -229,6 +248,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           info "    https://github.com/AntonioMeireles/kubernetes-vagrant-coreos-cluster/    "
           info ""
           info "============================================================================="
+        end
+      end
+      if vmName != "master"
+        kHost.trigger.after [:up] do
+          info "waiting for #{hostname} (#{BASE_IP_ADDR}.#{i+100}) to be ready..."
+          checkResponse("#{BASE_IP_ADDR}.#{i+100}", 10250, false,
+            "#{hostname} (#{BASE_IP_ADDR}.#{i+100})")
         end
       end
 
