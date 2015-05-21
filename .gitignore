@@ -1,4 +1,5 @@
 .vagrant
 .dockercfg
 kubLocalSetup
-defaultServices/dns/dns-controller.yaml
+defaultServices/dns/skydns-rc.yaml
+*.xxx

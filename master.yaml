@@ -19,7 +19,7 @@ write-files:
 
 coreos:
   etcd2:
-    name: __NAME__
+    name: __hostname__
     listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
     advertise-client-urls: http://$public_ipv4:2379,http://$public_ipv4:4001
     initial-cluster-token: k8s_etcd
@@ -121,7 +121,7 @@ coreos:
         After=flanneld.service
         [Service]
         ExecStartPre=-/usr/bin/mkdir -p /opt/bin
-        ExecStartPre=/usr/bin/curl -Ls -z /opt/bin/kube-apiserver -o /opt/bin/kube-apiserver https://storage.googleapis.com/kubernetes-release/release/__RELEASE__/bin/linux/amd64/kube-apiserver
+        ExecStartPre=/usr/bin/curl -Ls -z /opt/bin/kube-apiserver -o /opt/bin/kube-apiserver https://storage.googleapis.com/kubernetes-release/release/v__RELEASE__/bin/linux/amd64/kube-apiserver
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-apiserver
         ExecStart=/opt/bin/kube-apiserver \
         --allow_privileged=true \
@@ -133,7 +133,7 @@ coreos:
         --etcd_servers=http://127.0.0.1:2379 \
         --public_address_override=__MASTER_IP__ \
         --runtime_config=api/v1beta3 \
-        --cloud_provider=__CLOUDPROVIDER__ \
+        --cloud_provider=__CLOUD_PROVIDER__ \
         --logtostderr=true
         Restart=always
         RestartSec=10
@@ -147,7 +147,7 @@ coreos:
         After=kube-apiserver.service
 
         [Service]
-        ExecStartPre=/usr/bin/curl -Ls -z /opt/bin/kube-controller-manager -o /opt/bin/kube-controller-manager https://storage.googleapis.com/kubernetes-release/release/__RELEASE__/bin/linux/amd64/kube-controller-manager
+        ExecStartPre=/usr/bin/curl -Ls -z /opt/bin/kube-controller-manager -o /opt/bin/kube-controller-manager https://storage.googleapis.com/kubernetes-release/release/v__RELEASE__/bin/linux/amd64/kube-controller-manager
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-controller-manager
         ExecStart=/opt/bin/kube-controller-manager \
         --master=127.0.0.1:8080 \
@@ -164,7 +164,7 @@ coreos:
         After=kube-apiserver.service
 
         [Service]
-        ExecStartPre=/usr/bin/curl -Ls -z /opt/bin/kube-scheduler -o /opt/bin/kube-scheduler https://storage.googleapis.com/kubernetes-release/release/__RELEASE__/bin/linux/amd64/kube-scheduler
+        ExecStartPre=/usr/bin/curl -Ls -z /opt/bin/kube-scheduler -o /opt/bin/kube-scheduler https://storage.googleapis.com/kubernetes-release/release/v__RELEASE__/bin/linux/amd64/kube-scheduler
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-scheduler
         ExecStart=/opt/bin/kube-scheduler --master=127.0.0.1:8080
         Restart=always

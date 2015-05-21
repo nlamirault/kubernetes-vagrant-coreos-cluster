@@ -52,6 +52,19 @@ def checkResponse(host, port, expectValidResponse = true, description = "",
   puts "#{mesg}" if j >= attempts
 end
 
+def createFromTemplate(template, destination, hostname = "")
+  File.delete(destination) if File.exist?(destination)
+  data = File.read(template)
+  data.gsub!( /__(.*?)__/ ) {
+    begin
+      eval("#{$1}")
+    end
+  }
+  File.open(destination, "w") do |f|
+   f.write(data)
+  end
+end
+
 required_plugins = %w(vagrant-triggers)
 required_plugins.each do |plugin|
   need_restart = false
@@ -75,6 +88,8 @@ KUBERNETES_VERSION = ENV['KUBERNETES_VERSION'] || 'latest'
 if KUBERNETES_VERSION == "latest"
   Object.redefine_const(:KUBERNETES_VERSION, getK8Sreleases[0])
 end
+# for backward compat ...
+RELEASE = KUBERNETES_VERSION
 
 CHANNEL = ENV['CHANNEL'] || 'alpha'
 if CHANNEL != 'alpha'
@@ -181,12 +196,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       if vmName == "master"
         kHost.trigger.before [:up, :provision] do
           info "regenerating kubLocalSetup"
-          system <<-EOT.prepend("\n\n") + "\n"
-            cat kubLocalSetup.tmpl | \
-             sed -e "s|__KUBERNETES_VERSION__|#{KUBERNETES_VERSION}|g" \
-                 -e "s|__MASTER_IP__|#{MASTER_IP}|g" > kubLocalSetup
-             chmod +x kubLocalSetup
-          EOT
+          tmpf = "#{Dir.pwd}/kubLocalSetup"
+          createFromTemplate("#{tmpf}.tmpl", tmpf)
+          File.chmod(0755, tmpf)
+
           info "making sure localhosts' 'kubectl' matches what we just booted..."
           system "./kubLocalSetup install"
         end
@@ -203,26 +216,26 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         kHost.trigger.after [:up, :resume] do
           info "making sure ssh agent has the default vagrant key..."
           system "ssh-add ~/.vagrant.d/insecure_private_key"
+
           info "making sure local fleetctl won't misbehave with old staled data..."
           info "(wiping old ~/.fleetctl/known_hosts)"
-          system "rm -rf ~/.fleetctl/known_hosts"
+          kh = "#{Dir.pwd}/.fleetctl/known_hosts"
+          File.delete(kh) if File.exist?(kh)
         end
+
         kHost.trigger.after [:up] do
           info "waiting for the master to be ready..."
           checkResponse(MASTER_IP, 8080, true, "kubernetes' master")
+
           info "configuring k8s internal dns service"
+          rc = "#{Dir.pwd}/defaultServices/dns/skydns-rc.yaml"
+          createFromTemplate("#{rc}.in", rc)
           system <<-EOT.prepend("\n\n") + "\n"
-            cd defaultServices/dns
-            sed -e "s|__MASTER_IP__|#{MASTER_IP}|g" \
-                -e "s|__DNS_REPLICAS__|#{DNS_REPLICAS}|g" \
-                -e "s|__DNS_DOMAIN__|#{DNS_DOMAIN}|g" \
-                -e "s|__DNS_UPSTREAM_SERVERS__|#{DNS_UPSTREAM_SERVERS}|g" \
-              skydns-rc.yaml.in > dns-controller.yaml
-            cd ../..
             $(./kubLocalSetup shellinit)
-            kubectl create -f defaultServices/dns/dns-controller.yaml
+            kubectl create -f defaultServices/dns/skydns-rc.yaml
             kubectl create -f defaultServices/dns/skydns-svc.yaml.in
           EOT
+
           info "configuring k8s internal monitoring tools"
           system <<-EOT.prepend("\n\n") + "\n"
             $(./kubLocalSetup shellinit)
@@ -232,6 +245,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             kubectl create -f defaultServices/cluster-monitoring/influxdb-grafana-controller.yaml
           EOT
         end
+
         kHost.trigger.after [:up, :resume] do
           info "============================================================================="
           info ""
@@ -243,6 +257,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           info "============================================================================="
         end
       end
+
       if vmName != "master"
         kHost.trigger.after [:up] do
           info "waiting for #{hostname} (#{BASE_IP_ADDR}.#{i+100}) to be ready..."
@@ -329,16 +344,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       end
 
       if File.exist?(cfg)
-        kHost.vm.provision :file, :source => "#{cfg}", :destination => "/tmp/vagrantfile-user-data"
+        user_data = "#{cfg}.#{hostname}.xxx"
+        createFromTemplate(cfg, user_data, hostname)
+        kHost.vm.provision :file, :source => "#{user_data}", :destination => "/tmp/vagrantfile-user-data"
         kHost.vm.provision :shell, :privileged => true,
         inline: <<-EOF
-          sed -i "s,__RELEASE__,v#{KUBERNETES_VERSION},g" /tmp/vagrantfile-user-data
-          sed -i "s,__CHANNEL__,v#{CHANNEL},g" /tmp/vagrantfile-user-data
-          sed -i "s,__NAME__,#{hostname},g" /tmp/vagrantfile-user-data
-          sed -i "s|__ETCD_SEED_CLUSTER__|#{ETCD_SEED_CLUSTER}|g" /tmp/vagrantfile-user-data
-          sed -i "s|__MASTER_IP__|#{MASTER_IP}|g" /tmp/vagrantfile-user-data
-          sed -i "s,__CLOUDPROVIDER__,#{CLOUD_PROVIDER},g" /tmp/vagrantfile-user-data
-          sed -i "s,__DNS_DOMAIN__,#{DNS_DOMAIN},g" /tmp/vagrantfile-user-data
           mv /tmp/vagrantfile-user-data /var/lib/coreos-vagrant/
         EOF
       end

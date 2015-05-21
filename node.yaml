@@ -17,7 +17,7 @@ write-files:
       exit $?
 coreos:
   etcd2:
-    name: __NAME__
+    name: __hostname__
     listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
     initial-cluster: __ETCD_SEED_CLUSTER__
     proxy: on
@@ -85,7 +85,7 @@ coreos:
         After=setup-network-environment.service
 
         [Service]
-        ExecStartPre=/usr/bin/curl -Ls -o /opt/bin/kube-proxy -z /opt/bin/kube-proxy https://storage.googleapis.com/kubernetes-release/release/__RELEASE__/bin/linux/amd64/kube-proxy
+        ExecStartPre=/usr/bin/curl -Ls -o /opt/bin/kube-proxy -z /opt/bin/kube-proxy https://storage.googleapis.com/kubernetes-release/release/v__RELEASE__/bin/linux/amd64/kube-proxy
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-proxy
         # wait for kubernetes master to be up and ready
         ExecStartPre=/opt/bin/wupiao __MASTER_IP__ 8080
@@ -105,7 +105,7 @@ coreos:
 
         [Service]
         EnvironmentFile=/etc/network-environment
-        ExecStartPre=/usr/bin/curl -Ls -o /opt/bin/kubelet -z /opt/bin/kubelet https://storage.googleapis.com/kubernetes-release/release/__RELEASE__/bin/linux/amd64/kubelet
+        ExecStartPre=/usr/bin/curl -Ls -o /opt/bin/kubelet -z /opt/bin/kubelet https://storage.googleapis.com/kubernetes-release/release/v__RELEASE__/bin/linux/amd64/kubelet
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kubelet
         ExecStartPre=/usr/bin/mkdir -p /opt/kubernetes/manifests/
         # wait for kubernetes master to be up and ready
@@ -118,7 +118,7 @@ coreos:
           --allow_privileged=true \
           --cluster_dns=10.100.0.10 \
           --cluster_domain=__DNS_DOMAIN__ \
-          --cloud_provider=__CLOUDPROVIDER__ \
+          --cloud_provider=__CLOUD_PROVIDER__ \
           --logtostderr=true \
           --config=/opt/kubernetes/manifests/ \
           --cadvisor_port=4194 \
