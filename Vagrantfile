@@ -352,6 +352,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           mv /tmp/vagrantfile-user-data /var/lib/coreos-vagrant/
         EOF
       end
+
+      kHost.trigger.after [:halt, :reload, :destroy] do
+        # remove files created from templates...
+        cruft = [ "#{cfg}.#{hostname}.xxx" ]
+        if vmName == "master"
+          cruft += [ "#{Dir.pwd}/defaultServices/dns/skydns-rc.yaml",
+            "#{Dir.pwd}/kubLocalSetup",
+          ]
+        end
+        cruft.each do |f|
+          File.delete(f) if File.exist?(f)
+        end
+      end
     end
   end
 end
