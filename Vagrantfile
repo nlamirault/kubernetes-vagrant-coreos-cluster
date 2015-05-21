@@ -13,8 +13,26 @@ class Module
   end
 end
 
-if (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
-  abort "You're running on windows, an unsupported platform. Exiting..."
+module OS
+  def OS.windows?
+    (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
+  end
+
+  def OS.mac?
+   (/darwin/ =~ RUBY_PLATFORM) != nil
+  end
+
+  def OS.unix?
+    !OS.windows?
+  end
+
+  def OS.linux?
+    OS.unix? and not OS.mac?
+  end
+end
+
+if OS.windows?
+  abort "You're running on windows, an unsupported host platform. Exiting..."
 end
 
 def getK8Sreleases()
@@ -202,15 +220,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
           info "making sure localhosts' 'kubectl' matches what we just booted..."
           system "./kubLocalSetup install"
-        end
-        kHost.trigger.before [:up, :provision] do
-          info "checking host platform..."
-          system <<-EOT.prepend("\n\n") + "\n"
-            which uname &>/dev/null || \
-              ( echo "'uname' not found.";
-              echo "looks like this host is not of unix type (linux or MacOS X)...";
-              echo "...some features may not fully work, or just not work at all." )
-          EOT
         end
 
         kHost.trigger.after [:up, :resume] do
