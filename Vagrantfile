@@ -366,7 +366,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         # remove files created from templates...
         cruft = [ "#{cfg}.#{hostname}.xxx" ]
         if vmName == "master"
-          cruft += [ "#{Dir.pwd}/defaultServices/dns/skydns-rc.yaml",
+          cruft += [
+            "#{Dir.pwd}/defaultServices/dns/skydns-rc.yaml",
             "#{Dir.pwd}/kubLocalSetup",
           ]
         end
