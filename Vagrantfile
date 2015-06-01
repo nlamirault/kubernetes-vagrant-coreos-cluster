@@ -146,11 +146,12 @@ DNS_REPLICAS = ENV['DNS_REPLICAS'] || 1
 DNS_DOMAIN = ENV['DNS_DOMAIN'] || "k8s.local"
 DNS_UPSTREAM_SERVERS = ENV['DNS_UPSTREAM_SERVERS'] || "8.8.8.8:53,8.8.4.4:53"
 
-CLOUD_PROVIDER = ENV['CLOUD_PROVIDER'].to_s.downcase || 'vagrant'
-validCloudProviders = [ 'gce', 'gke', 'aws', 'azure', 'vagrant', 'vsphere',
+# 'vagrant' taken out bellow due to 0.18.0 breakage
+CLOUD_PROVIDER = ENV['CLOUD_PROVIDER'].to_s.downcase
+validCloudProviders = [ 'gce', 'gke', 'aws', 'azure', 'vsphere',
   'libvirt-coreos', 'juju' ]
 Object.redefine_const(:CLOUD_PROVIDER,
-  'vagrant') unless validCloudProviders.include?(CLOUD_PROVIDER)
+  '') unless validCloudProviders.include?(CLOUD_PROVIDER)
 
 ETCD_SEED_CLUSTER = "master=http://#{BASE_IP_ADDR}.#{1+100}:2380"
 

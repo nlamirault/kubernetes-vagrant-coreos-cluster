@@ -5,11 +5,16 @@ cluster setup with **[Vagrant](https://www.vagrantup.com)** (1.7.2+) and
 services.
 
 #### current status
+> - Kubernetes release [0.18.0](https://github.com/GoogleCloudPlatform/kubernetes/releases/tag/v0.18.0)
+>   introduced a new feature that allows standalone node registration possible
+>   kube-register not being needed anymore. Due to this current tip of this
+>   repository only works with 0.18.x or bigger k8s releases.
 > - **[CoreOS alpha 653.0.0](https://github.com/coreos/manifest/releases/tag/v653.0.0)**
 >   switched to the etcd 2.0.x stream. Due to that, and albeit we're still
->   using a containerized etcd2 as before the changes we had to make in our cloud-config templates
->   mean that things will will not work, from now on, on *tip* of this tree, on **any** CoreOS channel
->   for releases older than 653.0.0.
+>   using a containerized etcd2 as before the changes we had to make in our
+>   cloud-config templates mean that things will will not work, from now on,
+>   on *tip* of this tree, on **any** CoreOS channel for releases older than
+>   653.0.0.
 
 ####If you're lazy, or in a hurry, jump to the [TL;DR](#tldr) section.
 

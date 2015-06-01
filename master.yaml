@@ -169,25 +169,6 @@ coreos:
         ExecStart=/opt/bin/kube-scheduler --master=127.0.0.1:8080
         Restart=always
         RestartSec=10
-    - name: kube-register.service
-      command: start
-      content: |
-        [Unit]
-        Description=Kubernetes Registration Service
-        Documentation=https://github.com/kelseyhightower/kube-register
-        Requires=kube-apiserver.service
-        After=kube-apiserver.service
-
-        [Service]
-        ExecStartPre=/usr/bin/curl -Ls -z /opt/bin/kube-register -o /opt/bin/kube-register https://github.com/kelseyhightower/kube-register/releases/download/v0.0.4/kube-register-0.0.4-linux-amd64
-        ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-register
-        ExecStart=/opt/bin/kube-register \
-        --metadata=role=minion \
-        --fleet-endpoint=unix:///var/run/fleet.sock \
-        --api-endpoint=http://127.0.0.1:8080 \
-        --healthz-port=10248
-        Restart=always
-        RestartSec=10
   update:
     group: __CHANNEL__
     reboot-strategy: off
