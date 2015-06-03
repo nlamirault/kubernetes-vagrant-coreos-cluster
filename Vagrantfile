@@ -99,6 +99,7 @@ Vagrant.require_version ">= 1.6.0"
 
 MASTER_YAML = File.join(File.dirname(__FILE__), "master.yaml")
 NODE_YAML = File.join(File.dirname(__FILE__), "node.yaml")
+SSL_FILE = File.join(File.dirname(__FILE__), "kube-serviceaccount.key")
 
 DOCKERCFG = File.expand_path(ENV['DOCKERCFG'] || "~/.dockercfg")
 KUBERNETES_ALLOW_PRERELEASES = (ENV['KUBERNETES_ALLOW_PRERELEASES'] =~ (/(true|t|yes|y|1)$/i) && true) || false
@@ -143,7 +144,7 @@ GUI = (ENV['GUI'].to_s.downcase == 'true')
 BASE_IP_ADDR = ENV['BASE_IP_ADDR'] || "172.17.8"
 
 DNS_REPLICAS = ENV['DNS_REPLICAS'] || 1
-DNS_DOMAIN = ENV['DNS_DOMAIN'] || "k8s.local"
+DNS_DOMAIN = ENV['DNS_DOMAIN'] || "cluster.local"
 DNS_UPSTREAM_SERVERS = ENV['DNS_UPSTREAM_SERVERS'] || "8.8.8.8:53,8.8.4.4:53"
 
 # 'vagrant' taken out bellow due to 0.18.0 breakage
@@ -351,6 +352,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           s.inline = "cp /home/core/.dockercfg /root/.dockercfg"
           s.privileged = true
         end
+      end
+
+      if File.exist?(SSL_FILE)
+        kHost.vm.provision :file, :source => "#{SSL_FILE}", :destination => "/tmp/kube-serviceaccount.key"
       end
 
       if File.exist?(cfg)

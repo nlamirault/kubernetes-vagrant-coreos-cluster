@@ -203,6 +203,14 @@ you which to mount the allowed syntax is...
   disabled: false
 ```
 
+### Kubernetes Service-Account key file
+
+a default `kube-serviceaccount.key` file is being shipped for the sake of simplicity of deployment. In order for you to to generate your own, just run...
+
+```
+openssl genrsa -out kube-serviceaccount.key 2048 2>/dev/null
+```
+
 ## TL;DR
 
 ### Install kubectl
