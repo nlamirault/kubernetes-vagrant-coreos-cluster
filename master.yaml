@@ -86,12 +86,12 @@ coreos:
         # GUNICORN_OPTS is an workaround for
         # https://github.com/docker/docker-registry/issues/892
         ExecStart=/usr/bin/docker run --rm --net host --name docker-registry \
-            -e STANDALONE=false \
-            -e GUNICORN_OPTS=[--preload] \
-            -e MIRROR_SOURCE=https://registry-1.docker.io \
-            -e MIRROR_SOURCE_INDEX=https://index.docker.io \
-            -e MIRROR_TAGS_CACHE_TTL=1800 \
-            quay.io/devops/docker-registry:latest
+          -e STANDALONE=false \
+          -e GUNICORN_OPTS=[--preload] \
+          -e MIRROR_SOURCE=https://registry-1.docker.io \
+          -e MIRROR_SOURCE_INDEX=https://index.docker.io \
+          -e MIRROR_TAGS_CACHE_TTL=1800 \
+          quay.io/devops/docker-registry:latest
     - name: fleet.service
       command: start
     - name: docker.service
@@ -124,20 +124,20 @@ coreos:
         ExecStartPre=/usr/bin/curl -Ls -z /opt/bin/kube-apiserver -o /opt/bin/kube-apiserver https://storage.googleapis.com/kubernetes-release/release/v__RELEASE__/bin/linux/amd64/kube-apiserver
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-apiserver
         ExecStart=/opt/bin/kube-apiserver \
-        --service_account_key_file=/tmp/kube-serviceaccount.key \
-        --service_account_lookup=false \
-        --admission_control=NamespaceLifecycle,NamespaceAutoProvision,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota \
-        --allow_privileged=true \
-        --insecure_bind_address=0.0.0.0 \
-        --insecure_port=8080 \
-        --kubelet_https=true \
-        --secure_port=6443 \
-        --service-cluster-ip-range=10.100.0.0/16 \
-        --etcd_servers=http://127.0.0.1:2379 \
-        --public_address_override=__MASTER_IP__ \
-        --runtime_config=api/v1beta3 \
-        --cloud_provider=__CLOUD_PROVIDER__ \
-        --logtostderr=true
+          --service_account_key_file=/tmp/kube-serviceaccount.key \
+          --service_account_lookup=false \
+          --admission_control=NamespaceLifecycle,NamespaceAutoProvision,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota \
+          --allow_privileged=true \
+          --insecure_bind_address=0.0.0.0 \
+          --insecure_port=8080 \
+          --kubelet_https=true \
+          --secure_port=6443 \
+          --service-cluster-ip-range=10.100.0.0/16 \
+          --etcd_servers=http://127.0.0.1:2379 \
+          --public_address_override=__MASTER_IP__ \
+          --runtime_config=api/v1beta3 \
+          --cloud_provider=__CLOUD_PROVIDER__ \
+          --logtostderr=true
         Restart=always
         RestartSec=10
     - name: kube-controller-manager.service
@@ -153,13 +153,13 @@ coreos:
         ExecStartPre=/usr/bin/curl -Ls -z /opt/bin/kube-controller-manager -o /opt/bin/kube-controller-manager https://storage.googleapis.com/kubernetes-release/release/v__RELEASE__/bin/linux/amd64/kube-controller-manager
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-controller-manager
         ExecStart=/opt/bin/kube-controller-manager \
-        --service_account_private_key_file=/tmp/kube-serviceaccount.key \
-        --master=$private_ipv4:8080 \
-        --cloud_provider=__CLOUD_PROVIDER__ \
-        --pod_eviction_timeout=30s \
-        --node_milli_cpu=__NODE_CPUS__000 \
-        --node_memory=__NODE_MEM__Mi \
-        --logtostderr=true
+          --service_account_private_key_file=/tmp/kube-serviceaccount.key \
+          --master=$private_ipv4:8080 \
+          --cloud_provider=__CLOUD_PROVIDER__ \
+          --pod_eviction_timeout=30s \
+          --node_milli_cpu=__NODE_CPUS__000 \
+          --node_memory=__NODE_MEM__Mi \
+          --logtostderr=true
         Restart=always
         RestartSec=10
     - name: kube-scheduler.service
