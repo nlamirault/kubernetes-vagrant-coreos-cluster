@@ -124,7 +124,7 @@ coreos:
         ExecStartPre=/usr/bin/curl -Ls -z /opt/bin/kube-apiserver -o /opt/bin/kube-apiserver https://storage.googleapis.com/kubernetes-release/release/v__RELEASE__/bin/linux/amd64/kube-apiserver
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-apiserver
         ExecStart=/opt/bin/kube-apiserver \
-          --service_account_key_file=/tmp/kube-serviceaccount.key \
+          --service_account_key_file=/home/core/kube-serviceaccount.key \
           --service_account_lookup=false \
           --admission_control=NamespaceLifecycle,NamespaceAutoProvision,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota \
           --allow_privileged=true \
@@ -153,7 +153,7 @@ coreos:
         ExecStartPre=/usr/bin/curl -Ls -z /opt/bin/kube-controller-manager -o /opt/bin/kube-controller-manager https://storage.googleapis.com/kubernetes-release/release/v__RELEASE__/bin/linux/amd64/kube-controller-manager
         ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-controller-manager
         ExecStart=/opt/bin/kube-controller-manager \
-          --service_account_private_key_file=/tmp/kube-serviceaccount.key \
+          --service_account_private_key_file=/home/core/kube-serviceaccount.key \
           --master=$private_ipv4:8080 \
           --cloud_provider=__CLOUD_PROVIDER__ \
           --pod_eviction_timeout=30s \
