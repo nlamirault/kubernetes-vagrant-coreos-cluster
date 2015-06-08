@@ -237,7 +237,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           system "./kubLocalSetup install"
         end
 
-        kHost.trigger.after [:up, :resume] do
+        kHost.trigger.after [:up] do
           info "making sure ssh agent has the default vagrant key..."
           system "ssh-add ~/.vagrant.d/insecure_private_key"
 
