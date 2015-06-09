@@ -207,6 +207,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       cpus = NODE_CPUS
     end
 
+    ip_addr = "#{BASE_IP_ADDR}.#{i+100}"
     config.vm.define vmName = hostname do |kHost|
       kHost.vm.hostname = vmName
 
@@ -283,9 +284,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
       if vmName != "master"
         kHost.trigger.after [:up] do
-          info "waiting for #{hostname} (#{BASE_IP_ADDR}.#{i+100}) to be ready..."
-          checkResponse("#{BASE_IP_ADDR}.#{i+100}", 10250, false,
-            "#{hostname} (#{BASE_IP_ADDR}.#{i+100})")
+          info "waiting for #{hostname} (#{ip_addr}) to be ready..."
+          checkResponse("#{ip_addr}", 10250, false,
+            "#{hostname} (#{ip_addr})")
         end
       end
 
@@ -330,7 +331,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
       end
 
-      kHost.vm.network :private_network, ip: "#{BASE_IP_ADDR}.#{i+100}"
+      kHost.vm.network :private_network, ip: "#{ip_addr}"
       # you can override this in synced_folders.yaml
       kHost.vm.synced_folder ".", "/vagrant", disabled: true
 
